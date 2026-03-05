@@ -1,21 +1,24 @@
-"""Graph nodes for the orchestrator workflow."""
+"""Graph nodes - MVP version."""
 from typing import Dict, Any
-from langchain_core.messages import HumanMessage, AIMessage
 from src.application.orchestrator.workflow.state import OrchestratorState
-from src.application.orchestrator.workflow.chains import chat_agent
+from src.application.orchestrator.workflow.chains import get_search_agent
 
-def chat_node(state: OrchestratorState) -> Dict[str, Any]:
-
+async def search_agent_node(state: OrchestratorState) -> Dict[str, Any]:
+    """Search agent node with tool support."""
     messages = state["messages"]
-
-    #Invoke chat agent 
-    structured_result = chat_agent.invoke({"query":state["user_query"], "chat_history": messages})
-
-    message = AIMessage(
-        content=f"Found restaurant: {structured_result.name}",
-        additional_kwargs={"structured_output": structured_result.dict()}
+    session_id = state.get("session_id", "default")
+    
+    # Get ReAct agent
+    agent = get_search_agent()
+    
+    # Invoke with config for session
+    config = {"configurable": {"thread_id": session_id}}
+    response = await agent.ainvoke(
+        {"messages": messages},
+        config=config,
     )
+    
+    # Return updated messages
     return {
-        "messages": [message]
+        "messages": response["messages"],
     }
-
