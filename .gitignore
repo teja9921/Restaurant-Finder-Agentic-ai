@@ -2,3 +2,4 @@
 .env
 __pycache__
 UNKNOWN.egg-info
+restaurant-finder-api/src/restaurant_finder_api.egg-info/

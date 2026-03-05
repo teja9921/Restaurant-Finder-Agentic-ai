@@ -1,14 +1,16 @@
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
-
+#restaurant-finder-api/pyproject.toml
 [project]
-name = "restaurant-finder-agent"
+name = "restaurant-finder-api"
 version = "0.1.0"
 requires-python = ">=3.11"
-
 dependencies = [
-"langgraph>=0.2.0",
-"langchain>=0.3.0",
-"pydantic>=2.9.0"
+    "langgraph>=0.2.35",
+    "langchain>=0.3.7",
+    "langchain-aws>=0.2.6",
+    "boto3>=1.35.0",
+    "pydantic>=2.9.0",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
