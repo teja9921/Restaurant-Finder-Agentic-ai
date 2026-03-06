@@ -23,6 +23,13 @@ class Settings:
         "BEDROCK_INFERENCE_PROFILE_ID", ""
     ).strip() or None
 
+    # MCP Gateway Configuration
+    GATEWAY_URL: Optional[str] = os.getenv("GATEWAY_URL")
+    GATEWAY_ID: Optional[str] = os.getenv("GATEWAY_ID")
+    
+    # Memory configuration
+    MEMORY_ID: Optional[str] = os.getenv("MEMORY_ID")
+    
     @property
     def BEDROCK_TARGET_ID(self) -> str:
         """Inference profile takes precedence over direct model IDs."""

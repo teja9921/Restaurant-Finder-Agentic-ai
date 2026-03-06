@@ -1,4 +1,3 @@
-#restaurant-finder-api/src/infrastructure/mcp_client.py
 """MCP Gateway client - Mock version for Sprint 3."""
 import json
 from typing import Dict, Any, Optional
