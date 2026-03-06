@@ -9,7 +9,7 @@ from constructs import Construct
 
 class EcrStack(Stack):
     """Stack for ECR container registry"""
-    def __init__(scope: Construct, construct_id: str, **kwargs) ->None:
+    def __init__(self, scope: Construct, construct_id: str, **kwargs) ->None:
         super().__init__(scope, construct_id, **kwargs)
 
         #ECR repository for agent container

@@ -4,7 +4,8 @@ from src.application.orchestrator.workflow.state import OrchestratorState
 from src.application.orchestrator.workflow.nodes import (
     router_node,
     search_agent_node,
-    chat_agent_node
+    chat_agent_node,
+    memory_hook_node
     )
 from src.application.orchestrator.workflow.edges import route_intent
 
@@ -17,7 +18,7 @@ def create_workflow() -> StateGraph:
     workflow.add_node("router", router_node)
     workflow.add_node("search_agent", search_agent_node)
     workflow.add_node("chat_agent", chat_agent_node)
-
+    workflow.add_node("memory_hook", memory_hook_node)
 
     # Entry point is router
     workflow.set_entry_point("router")
@@ -32,9 +33,10 @@ def create_workflow() -> StateGraph:
         }
     )
 
-    # Both agents go to END
-    workflow.add_edge("search_agent", END)
-    workflow.add_edge("chat_agent", END)
+    # Both agents go to memory hook first, then END
+    workflow.add_edge("search_agent", "memory_hook")
+    workflow.add_edge("chat_agent", "memory_hook")
+    workflow.add_edge("memory_hook", END)
     
     return workflow
 
