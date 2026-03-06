@@ -1,11 +1,21 @@
 """LLM chains - MVP version."""
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_aws import ChatBedrockConverse
 from langgraph.prebuilt import create_react_agent
-
 from src.application.orchestrator.workflow.tools import ALL_TOOLS
 from src.config import settings
-from src.domain.prompts import SEARCH_AGENT_PROMPT
+from src.domain.prompts import ROUTER_SYSTEM_PROMPT,SEARCH_AGENT_PROMPT,CHAT_AGENT_PROMPT
 
+def get_router_chain():
+    """Get router chain for intent classification"""
+    model = get_model(temperature=0.0)
+
+    prompt = ChatPromptTemplate([
+        ("system", ROUTER_SYSTEM_PROMPT),
+        MessagesPlaceholder(variable_name="messages")
+    ])
+
+    return prompt | model
 
 def get_model(temperature: float = 0.7) -> ChatBedrockConverse:
     """Get Bedrock model."""
@@ -28,3 +38,14 @@ def get_search_agent():
     )
 
     return agent
+
+def get_chat_agent():
+    """Get simple chat agent (no tools)."""
+    model = get_model(temperature=0.7)
+
+    prompt = ChatPromptTemplate([
+        ("system", CHAT_AGENT_PROMPT),
+        MessagesPlaceholder(variable_name="messages")
+    ])
+
+    return prompt | model
