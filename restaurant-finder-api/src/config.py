@@ -29,6 +29,10 @@ class Settings:
     
     # Memory configuration
     MEMORY_ID: Optional[str] = os.getenv("MEMORY_ID")
+
+    GUARDRAIL_ENABLED: bool = os.getenv("GUARDRAIL_ENABLED", "false").lower() == "true"
+    GUARDRAIL_ID: Optional[str] = os.getenv("GUARDRAIL_ID")
+    GUARDRAIL_VERSION: str = os.getenv("GUARDRAIL_VERSION", "DRAFT")
     
     @property
     def BEDROCK_TARGET_ID(self) -> str:
