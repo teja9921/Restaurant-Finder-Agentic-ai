@@ -103,7 +103,8 @@ async def stream_response_content(
         "made_tool_calls": False,
     }
 
-    buffer = ""
+    raw_buffer = "" # Track raw content (with tags)
+    cleaned_buffer = ""     # Track cleaned content (without tags)
 
     async for event in graph.astream(input_data, config):
         for node_name, node_output in event.items():
@@ -114,20 +115,24 @@ async def stream_response_content(
 
             if messages_out:
                 last_msg = messages_out[-1]
-                content = getattr(last_msg, 'content', None)
+                raw_content = getattr(last_msg, 'content', None)
 
-                if content and content != buffer:
+                if raw_content and raw_content != raw_buffer:
+                    # Update raw buffer
+                    raw_buffer = raw_content
+
+                    # Remove <thinking>...</thinking> blocks
                     cleaned_content = re.sub(
                         r'<thinking>.*?</thinking>\s*',
                         '',
-                        content,
+                        raw_content,
                         flags=re.DOTALL
                     )
 
                     # Calculate delta from cleaned content
-                    if cleaned_content != buffer:
-                        delta = cleaned_content[len(buffer):]
-                        buffer = cleaned_content
+                    if cleaned_content != cleaned_buffer:
+                        delta = cleaned_content[len(cleaned_buffer):]
+                        cleaned_buffer = cleaned_content
                         
                         if delta:
                             yield delta
