@@ -49,7 +49,7 @@ class GuardrailManager:
             )
 
             #check if content was blocked
-            action = resposne.get("action")
+            action = response.get("action")
 
             if action == "GUARDRAIL_INTERVENED":
                 # Content violated guardrails

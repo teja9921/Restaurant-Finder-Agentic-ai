@@ -1,6 +1,7 @@
 """Streaming response handlers for real-time agent output."""
 from typing import AsyncIterator, Dict, Any
 import json
+import re
 
 async def stream_graph_updates(
         graph,
@@ -44,7 +45,7 @@ async def stream_graph_updates(
                         yield format_sse_event({
                             "type": "tool_call",
                             "tool": tool_call.get("name", "unknown"),
-                            "args": toll_call.get("args", {})
+                            "args": tool_call.get("args", {})
                         })
             
     #Final event indicating completion
