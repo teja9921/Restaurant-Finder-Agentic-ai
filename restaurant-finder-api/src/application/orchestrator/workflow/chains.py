@@ -19,12 +19,14 @@ def get_router_chain():
 
 def get_model(temperature: float = 0.7) -> ChatBedrockConverse:
     """Get Bedrock model."""
-    return ChatBedrockConverse(
-        model=settings.BEDROCK_MODEL_ID,
-        temperature=temperature,
-        region_name=settings.AWS_REGION,
-        credentials_profile_name=settings.AWS_PROFILE,
-    )
+    model_kwargs = {
+        "model": settings.BEDROCK_MODEL_ID,
+        "temperature": temperature,
+        "region_name": settings.AWS_REGION,
+    }
+    if settings.AWS_PROFILE:
+        model_kwargs["credentials_profile_name"] = settings.AWS_PROFILE
+    return ChatBedrockConverse(**model_kwargs)
 
 
 def get_search_agent():
