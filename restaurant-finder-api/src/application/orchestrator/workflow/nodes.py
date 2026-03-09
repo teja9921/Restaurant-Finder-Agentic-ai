@@ -8,7 +8,9 @@ from src.application.orchestrator.workflow.chains import (
     get_chat_agent
 )
 from src.infrastructure.memory import memory_manager
+from src.infrastructure.observability import trace_function
 
+@trace_function("node_router")
 async def router_node(state: OrchestratorState) -> Dict[str, Any]:
     """Router node - classifies user intent."""
     messages = state["messages"]
@@ -33,6 +35,7 @@ async def router_node(state: OrchestratorState) -> Dict[str, Any]:
     }
 
 
+@trace_function("node_search_agent")
 async def search_agent_node(state: OrchestratorState) -> Dict[str, Any]:
     """Search agent node with tool support."""
     messages = state["messages"]
@@ -72,6 +75,8 @@ async def search_agent_node(state: OrchestratorState) -> Dict[str, Any]:
         "tool_call_count": state.get("tool_call_count", 0) + tool_count,
     }
 
+
+@trace_function("node_chat_agent")
 async def chat_agent_node(state: OrchestratorState) -> Dict[str, Any]:
     """Chat agent node - simple conversation."""
     messages = state["messages"]
@@ -83,6 +88,8 @@ async def chat_agent_node(state: OrchestratorState) -> Dict[str, Any]:
         "messages": [AIMessage(content = response.content)]
     }
 
+
+@trace_function("node_memory_hook")
 async def memory_hook_node(state: OrchestratorState) -> Dict[str, Any]:
     """
     Memory post-hook - stores conversation to long-term memory.

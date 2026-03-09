@@ -4,8 +4,7 @@ import sys
 from langchain_core.messages import HumanMessage
 from src.application.orchestrator.workflow.graph import graph
 from src.infrastructure.memory import memory_manager
-
-
+from src.infrastructure.observability import setup_observability
 
 async def run_agent(user_input: str, session_id: str = "test"):
     """Run the agent."""
@@ -203,6 +202,13 @@ async def interactive_mode():
 
 
 if __name__ == "__main__":
+
+    # Setup observability
+    try:
+        setup_observability()
+        print("[Observability] Setup complete\n")
+    except Exception as e:
+        print(f"[Warning] Observability setup failed: {e}\n")
 
     # Check mode
     if len(sys.argv) > 1:
