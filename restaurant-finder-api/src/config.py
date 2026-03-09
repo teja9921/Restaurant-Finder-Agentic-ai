@@ -15,7 +15,7 @@ class Settings:
 
     # AWS Configuration
     AWS_REGION: str = os.getenv("AWS_REGION", "ap-south-1")
-    AWS_PROFILE: Optional[str] = os.getenv("AWS_PROFILE", "bedrock-dev")
+    AWS_PROFILE: Optional[str] = os.getenv("AWS_PROFILE", "").strip() or None
 
     # Bedrock Configuration
     BEDROCK_MODEL_ID: str = os.getenv("BEDROCK_MODEL_ID", "").strip()
