@@ -37,6 +37,11 @@ jobs:
         working-directory: ./restaurant-finder-infra
         run: |
           cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/ap-south-1 || true
+      - name: Cleanup CDKToolkit on failure
+        if: failure()  # only runs if previous step failed
+        run: |
+          aws cloudformation delete-stack --stack-name CDKToolkit --region ap-south-1
+          aws s3 rb s3://cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-ap-south-1 --force
 
       - name: CDK Deploy
         working-directory: ./restaurant-finder-infra
