@@ -33,12 +33,20 @@ jobs:
           pip install -r requirements.txt
           npm install -g aws-cdk
 
-      - name: CDK Bootstrap 
+      - name: Check if CDKToolkit exists
+        run: |
+          if ! aws cloudformation describe-stacks --stack-name CDKToolkit --region ap-south-1 >/dev/null 2>&1; then
+            echo "BOOTSTRAP_NEEDED=true" >> $GITHUB_ENV
+          fi
+      
+      - name: CDK Bootstrap
+        if: env.BOOTSTRAP_NEEDED == 'true'
         working-directory: ./restaurant-finder-infra
         run: |
-          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/ap-south-1 || true
-      - name: Cleanup CDKToolkit on failure
-        if: failure()  # only runs if previous step failed
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/ap-south-1
+          
+      - name: Cleanup CDKToolkit on bootstrap failure
+        if: failure() && env.BOOTSTRAP_NEEDED == 'true' # only runs if previous step failed
         run: |
           aws cloudformation delete-stack --stack-name CDKToolkit --region ap-south-1
           aws s3 rb s3://cdk-hnb659fds-assets-${{ secrets.AWS_ACCOUNT_ID }}-ap-south-1 --force
