@@ -1,0 +1,33 @@
+{
+    "tools": [
+        {
+            "name": "search_restaurants",
+            "description": "Seaarch for restaurants based on location, cuisine type, and dietary restrictions. Returns detailed including ratings, addresses, phone numbers and hours.",
+            "inputSchema":{
+                "type": "object",
+                "properties":{
+                    "location":{
+                        "type": "string",
+                        "description": "City or area to search for restaurants(e.g., 'Mumbai', 'Banglore', 'Delhi')"
+                    },
+                    "cuisine": {
+                    "type": "string",
+                    "description": "Type of cuisine (e.g., 'Italian', 'Chinese', 'Indian', 'Mexican'). Optional."
+                    },
+                    "dietaryRestrictions": {
+                        "type": "string",
+                        "description": "Comma-separated dietary restrictions (e.g., 'vegan', 'vegetarian', 'gluten-free', 'halal'). Optional."
+                    },
+                    "maxResults": {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (1-10). Defaults to 5.",
+                        "minimum": 1,
+                        "maximum": 10,
+                        "default": 5
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    ]
+}
