@@ -53,4 +53,4 @@ jobs:
 
       - name: CDK Deploy
         working-directory: ./restaurant-finder-infra
-        run: cdk deploy --all --require-approval never
+        run: cdk deploy RestaurantFinderEcr RestaurantFinderMCPStack --require-approval never
