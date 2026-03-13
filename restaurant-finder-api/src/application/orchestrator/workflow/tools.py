@@ -2,7 +2,7 @@
 import json
 from typing import Optional
 from langchain_core.tools import tool
-from src.infrastructure.mcp_client import mcp_client
+from src.infrastructure.mcp_client import get_mcp_client
 from src.domain.models import Restaurant, SearchResult
 
 
@@ -10,7 +10,7 @@ from src.domain.models import Restaurant, SearchResult
 def search_restaurants(
     location: str,
     cuisine: Optional[str] = None,
-    price_level: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
 ) -> str:
     """
     Search for restaurants using MCP Gateway.
@@ -18,26 +18,18 @@ def search_restaurants(
     Args:
         location: City or area to search in
         cuisine: Type of cuisine (Italian, Chinese, etc.)
-        price_level: Price range ($, $$, $$$, $$$$)
+        dietary_restrictions: 'Vegan', 'Vegetarian' , 'Non-Vegetarian'
 
     Returns:
         JSON string with restaurant results
     """
-    #Call MCP client
-    result = mcp_client.call_tool(
-        tool_name = "search_restaurants",
-        parameters ={
-            "location": location,
-            "cuisine": cuisine,
-            "price_level": price_level,
-        }
+    #get mcp client
+    mcp_client = get_mcp_client()
+    restaurants = mcp_client.search_restaurants(
+            location,
+            cuisine,
+            dietary_restrictions,
     )
-
-    #Parse into domain models
-    restaurants = [
-        Restaurant(**r)
-        for r in result.get("restaurants", [])
-    ]
 
     search_result = SearchResult(
         query = f"{cuisine or 'restaurants'} in {location}",
